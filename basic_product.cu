@@ -63,3 +63,7 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+// notion
+// Memory set aside by cudaMalloc or malloc is 1D,
+// so you can't use 2D indexing like A[row][col]
