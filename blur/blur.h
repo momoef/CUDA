@@ -1,0 +1,1 @@
+void blurIage(unsigned char *in, unsigned char *out, int w, int h);
