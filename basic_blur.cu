@@ -1,21 +1,29 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-__global__ void blur(float *A, float *B, int n)
+#define BLUR_SIZE 1
+
+__global__ void blur(unsigned char *in, unsigned char *out, int w, int h)
 {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (row < n && col < n)
+    if (row < h && col < w)
     {
-        float presum = 0;
-        for (int i = row - 1; i <= row + 1; i++)
+        int pixVal = 0, pixels = 0;
+        for (int blurRow = -BLUR_SIZE; blurRow < BLUR_SIZE + 1; ++blurRow)
         {
-            for (int j = col - 1; j <= col + 1; j++)
+            for (int blurCol = -BLUR_SIZE; bulrCol < BLUR_SIZE + 1; ++blurCol)
             {
-                presum += A[i * n + j];
+                int curRow = row + blurRow;
+                int curCol = col + blurCol;
+                if (curRow >= 0 && curRow < h && curCol >= 0 && curCol < w)
+                {
+                    pixVal += in[curRow * w + curCol];
+                    ++pixels;
+                }
             }
         }
-        B[row * n + col] = presum / 9;
+        out[row * w + col] = (unsigned char)((float)pixVal / pixels);
     }
 }
